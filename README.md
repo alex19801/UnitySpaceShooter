@@ -1,2 +1,2 @@
 # UnitySpaceShooter
-UnitySpaceShooter - My First Project
+UnitySpaceShooter - My First Project2
