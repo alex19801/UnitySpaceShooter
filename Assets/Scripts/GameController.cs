@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
 
@@ -59,9 +60,11 @@ public class GameController : MonoBehaviour {
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
-                Application.LoadLevel(Application.loadedLevel);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+
+        /*
         if (Input.GetKeyDown(KeyCode.KeypadPlus))
         {
             GameObject go = GameObject.FindGameObjectWithTag("Player");
@@ -74,6 +77,7 @@ public class GameController : MonoBehaviour {
             PlayerController player = go.GetComponent<PlayerController>();
             player.fireRate = player.fireRate * 1.3f;
         }
+        */
     }
 
     IEnumerator spawnHazard()
@@ -87,7 +91,7 @@ public class GameController : MonoBehaviour {
 
                 Vector3 spawnPosition = new Vector3 (UnityEngine.Random.Range (-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
 				Quaternion spawnRotation = Quaternion.identity;
-				Instantiate (hazard, spawnPosition, spawnRotation);
+				Instantiate (hazard, spawnPosition, hazard.transform.rotation);
 				yield return new WaitForSeconds (waveDelay);
 
                 

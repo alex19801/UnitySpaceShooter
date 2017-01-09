@@ -12,29 +12,34 @@ public class PlayerController : MonoBehaviour {
 
     public float Speed;
     public float tilt;
-    public float fireRate;
+    // public float fireRate;
     public Boundary boundary;
 
     public GameObject shot;
     public Transform shotSpawn;
+    public Weapon weapon;
+
 
     private Rigidbody rb;
     private float nextTime;
-    private AudioSource audioShot;
+    
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        audioShot = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
         if (Input.GetButton("Fire1") && Time.time > nextTime)
         {
-            nextTime = Time.time + fireRate;
-            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-            audioShot.Play();
+            nextTime = Time.time + weapon.fireRate; // fireRate;
+            GameObject ammo =  Instantiate(weapon.ammo, shotSpawn.position, shotSpawn.rotation);
+            Health damage = ammo.GetComponent<Health>();
+            if (damage != null) {
+                damage.health = weapon.damage;
+            }
+            //Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
         }
 
     } 
@@ -45,9 +50,6 @@ public class PlayerController : MonoBehaviour {
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        // rigidbody.velocity = 
-        // GetComponent("")
-
 
         rb.velocity = movement * Speed;
 
