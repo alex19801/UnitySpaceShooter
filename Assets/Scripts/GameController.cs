@@ -114,7 +114,7 @@ public class GameController : MonoBehaviour {
     {
         GameObject bacground = GameObject.FindGameObjectWithTag("BackGround");
         BackgroundScrolling bacjgroundScrolling = bacground.GetComponent<BackgroundScrolling>();
-        bacjgroundScrolling.scrollSpeed = bacjgroundScrolling.scrollSpeed * (1 + (wave / 10)); // +2% background Speed after every wave;
+        bacjgroundScrolling.scrollSpeed = bacjgroundScrolling.scrollSpeed * (1f + (wave / 100f)); // +2% background Speed after every wave;
         scoreText.text =  "BacSpeed: " + bacjgroundScrolling.scrollSpeed;
     }
 
