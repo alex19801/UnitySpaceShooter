@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour {
     private bool restart;
     private int Score;
     private bool paused;
+    private Inventory _inventory;
     int wave;
 
     #region PublicMethods
@@ -77,34 +78,23 @@ public class GameController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            GameObject go = GameObject.FindGameObjectWithTag("Inventary");
-            Inventory inventory = go.GetComponent<Inventory>();
+            if (_inventory == null)
+            {
+                GameObject go = GameObject.FindGameObjectWithTag("Inventary");
+                _inventory = go.GetComponent<Inventory>();
+            }
 
-            inventory.enabled = !inventory.enabled;
-            Pause(inventory.enabled);
-
+            if (!_inventory.isDraggable)
+            {
+                _inventory.visible = !_inventory.visible;
+                Pause(_inventory.visible);
+            }
         }
-
 
         if (Input.GetKeyDown(KeyCode.R))
         {
             Pause();
         }
-
-        /*
-        if (Input.GetKeyDown(KeyCode.KeypadPlus))
-        {
-            GameObject go = GameObject.FindGameObjectWithTag("Player");
-            PlayerController player  =   go.GetComponent<PlayerController>();
-            player.fireRate = player.fireRate * 0.7f;
-        }
-        if (Input.GetKeyDown(KeyCode.KeypadMinus))
-        {
-            GameObject go = GameObject.FindGameObjectWithTag("Player");
-            PlayerController player = go.GetComponent<PlayerController>();
-            player.fireRate = player.fireRate * 1.3f;
-        }
-        */
     }
 
     private bool Pause(bool? pause = null)
@@ -129,7 +119,7 @@ public class GameController : MonoBehaviour {
         
     } 
 
-    private void SweachWeapon(string weaponName)
+    public void SweachWeapon(string weaponName)
     {
         GameObject go = GameObject.FindGameObjectWithTag("Player");
         PlayerController player = go.GetComponent<PlayerController>();
