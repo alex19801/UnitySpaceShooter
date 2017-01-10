@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour {
     private bool gameOver;
     private bool restart;
     private int Score;
+    private bool paused;
     int wave;
 
     #region PublicMethods
@@ -64,6 +65,32 @@ public class GameController : MonoBehaviour {
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SweachWeapon("WeaponCannon");
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            SweachWeapon("WeaponDefault");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            GameObject go = GameObject.FindGameObjectWithTag("Inventary");
+            Inventory inventory = go.GetComponent<Inventory>();
+
+            inventory.enabled = !inventory.enabled;
+            Pause(inventory.enabled);
+
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Pause();
+        }
+
         /*
         if (Input.GetKeyDown(KeyCode.KeypadPlus))
         {
@@ -78,6 +105,45 @@ public class GameController : MonoBehaviour {
             player.fireRate = player.fireRate * 1.3f;
         }
         */
+    }
+
+    private bool Pause(bool? pause = null)
+    {
+        if (pause == null)
+        {
+            pause = !pause;
+        }
+
+        if ((bool)pause)
+        {
+            Time.timeScale = 0;
+            paused = true;
+        }
+        else
+        {
+            Time.timeScale = 1;
+            paused = false;
+        }
+
+        return paused;
+        
+    } 
+
+    private void SweachWeapon(string weaponName)
+    {
+        GameObject go = GameObject.FindGameObjectWithTag("Player");
+        PlayerController player = go.GetComponent<PlayerController>();
+
+        var w1 = Resources.FindObjectsOfTypeAll(typeof(Weapon)) as Weapon[];
+
+        foreach (Weapon item in w1)
+        {
+            if (item.name == weaponName)
+            {
+                print("GameObjects " + item);
+                player.weapon = item;
+            }
+        }
     }
 
     IEnumerator spawnHazard()

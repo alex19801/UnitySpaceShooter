@@ -41,7 +41,6 @@ public class PlayerController : MonoBehaviour {
             }
             //Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
         }
-
     } 
 
     void FixedUpdate()

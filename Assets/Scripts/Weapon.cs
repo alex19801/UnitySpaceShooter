@@ -8,4 +8,5 @@ public class Weapon : MonoBehaviour {
     public float fireRate;
     public float damage;
     public float bulletSpead;
+    public Texture2D texture;
 }
