@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour {
     public GUIText scoreText;
     public GUIText gameOverText;
     public GUIText restartText;
+    
 
 
     private bool gameOver;
@@ -91,7 +92,7 @@ public class GameController : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Pause();
         }
@@ -101,7 +102,7 @@ public class GameController : MonoBehaviour {
     {
         if (pause == null)
         {
-            pause = !pause;
+            pause = !paused;
         }
 
         if ((bool)pause)
@@ -119,19 +120,20 @@ public class GameController : MonoBehaviour {
         
     } 
 
-    public void SweachWeapon(string weaponName)
+    public void SweachWeapon(string weaponName, ShipSlots shipmentSlot = ShipSlots.primalWeapon)
     {
         GameObject go = GameObject.FindGameObjectWithTag("Player");
         PlayerController player = go.GetComponent<PlayerController>();
 
-        var w1 = Resources.FindObjectsOfTypeAll(typeof(Weapon)) as Weapon[];
+        var weapons = Resources.FindObjectsOfTypeAll(typeof(Weapon)) as Weapon[];
 
-        foreach (Weapon item in w1)
+        foreach (Weapon weapon in weapons)
         {
-            if (item.name == weaponName)
+            if (weapon.name == weaponName)
             {
-                print("GameObjects " + item);
-                player.weapon = item;
+                print("GameObjects " + weapon);
+                player.weapon = weapon;
+                player.equipment[shipmentSlot] = new Item() { weapon = weapon };
             }
         }
     }
@@ -170,7 +172,7 @@ public class GameController : MonoBehaviour {
     {
         GameObject bacground = GameObject.FindGameObjectWithTag("BackGround");
         BackgroundScrolling bacjgroundScrolling = bacground.GetComponent<BackgroundScrolling>();
-        bacjgroundScrolling.scrollSpeed = bacjgroundScrolling.scrollSpeed * (1f + (wave / 100f)); // +2% background Speed after every wave;
+        bacjgroundScrolling.scrollSpeed = bacjgroundScrolling.scrollSpeed * 1.02f; // +2% background Speed after every wave;
         scoreText.text =  "BacSpeed: " + bacjgroundScrolling.scrollSpeed;
     }
 

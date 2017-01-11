@@ -10,4 +10,5 @@ public class Item
     public int Cost;
     public Texture2D Textura;
     public Weapon weapon;
+    public bool autoShot;
 }

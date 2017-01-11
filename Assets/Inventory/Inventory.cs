@@ -11,11 +11,12 @@ public class Inventory : MonoBehaviour
     public float ButtonWidth = 40; //высота ячейки
     public float ButtonHeight = 40; //ширина ячейки
     public bool visible;
+    public GameObject shipModel;
 
     int invRows = 6; //количество колонок
     int invColumns = 4; //количество столбцов
     Rect inventoryWindowRect = new Rect(10, 10, 170, 265); //область окна
-    Rect inventoryShip = new Rect(10, 300, 170, 70); //область окна
+    Rect inventoryShip = new Rect(10, 300, 170, 280); //область окна
     // Rect inventoryBoxRect = new Rect(); //область окна с изображением иконки
     public bool isDraggable; //перемещение предмета
     Item selectItem; //вспомогательная переменная куда заносим предмет инвентаря
@@ -27,6 +28,7 @@ public class Inventory : MonoBehaviour
     void Start()
     {
         List<Item> items = GetComponent<ItemData>().Items;
+
         //добавляем предметы в инвентарь
         for (int i = 0; i < items.Count; i++)
         {
@@ -43,6 +45,8 @@ public class Inventory : MonoBehaviour
 
     void OnGUI()
     {
+        if (!visible) GameObject.Destroy(_playerShipModel);
+
         if (visible)
         {
             GUI.Window(INVENTORY_WINDOW_ID, inventoryWindowRect, firstInventory, "INVENTORY"); //создаем окно
@@ -61,54 +65,96 @@ public class Inventory : MonoBehaviour
         GUI.DrawTexture(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 40, 40), dragTexture);//рисуем текстуру иконки
     }
 
+    private GameObject _playerShipModel;
+
     void insert2(int id)
     {
-        for (int y = 0; y < 1; y++)
+        shipModel.transform.position = new Vector3(-16.4f, 0, -5);
+        shipModel.transform.localScale = new Vector3(5, 5, 5);
+
+        if (!_playerShipModel)
         {
-            for (int x = 0; x < invColumns; x++)
+            // _playerShipModel = Instantiate(shipModel, new Vector2(10, 10), new Quaternion(0, 0, 0, 0));
+            _playerShipModel = Instantiate(shipModel);
+        }
+
+
+        Vector2 slotSize = new Vector2(ButtonHeight, ButtonWidth);
+
+        // Primal Weapon
+        Vector2 primalSlotPosition = new Vector2(63, 50);
+        SetSlot(ref ShippedItems, 0, primalSlotPosition, slotSize, ShipSlots.primalWeapon);
+        
+        // Left wing
+        Vector2 leftWingSlotPosition = new Vector2(10, 150);
+        SetSlot(ref ShippedItems, 1, leftWingSlotPosition, slotSize);
+        
+        // Right wing
+        Vector2 rightWingSlotPosition = new Vector2(120, 150);
+        SetSlot(ref ShippedItems, 2, rightWingSlotPosition, slotSize);
+
+        // Rear slot
+        Vector2 rearSlotPosition = new Vector2(63, 220);
+        SetSlot(ref ShippedItems, 3, rearSlotPosition, slotSize);
+
+
+        GUI.DragWindow();
+    }
+
+    private void SetSlot(ref Dictionary<int, Item> inventary, int slotId , Vector2 slotPosition, Vector2 slotSize, ShipSlots? shipSlot = null)
+    {
+        if (inventary.ContainsKey(slotId))//проверяем содеоржится ли ключ с данным значением
+        {
+            if (GUI.Button(new Rect(slotPosition, slotSize), new GUIContent(inventary[slotId].Textura), "button"))
             {
-                if (ShippedItems.ContainsKey(x + y * invColumns))//проверяем содеоржится ли ключ с данным значением
+                if (!isDraggable)
                 {
-                    if (GUI.Button(new Rect(5 + (x * ButtonHeight), 20 + (y * ButtonHeight), ButtonWidth, ButtonHeight), new GUIContent(ShippedItems[x + y * invColumns].Textura), "button"))
-                    {
-                        if (!isDraggable)
-                        {
-                            dragTexture = ShippedItems[x + y * invColumns].Textura;//присваиваем нашой текстуре которая должна отображаться при перетаскивании, текстуру предмета
-                            isDraggable = true;//возможность перемещать предмет
-                            selectItem = ShippedItems[x + y * invColumns];//присваиваем вспомогательной переменной наш предмет
-                            ShippedItems.Remove(x + y * invColumns);//удаляем из словаря предмет
-                        }
-                    }
-                }
-                else
-                {
-                    if (isDraggable)
-                    {
-                        if (GUI.Button(new Rect(5 + (x * ButtonHeight), 20 + (y * ButtonHeight), ButtonWidth, ButtonHeight), "", "button"))
-                        {
-                            ShippedItems.Add(x + y * invColumns, selectItem);//добавляем предмет который перетаскиваем в словарь
-                                                                                //обнуляем переменные
-                            if (x == 0 && y == 0)
-                            {
-                                GameObject go = GameObject.FindGameObjectWithTag("GameController");
-                                GameController pc = go.GetComponent<GameController>() as GameController;
-                                pc.SweachWeapon(selectItem.Name);
-                            }
-
-                            isDraggable = false;
-                            selectItem = null;
-
-                        }
-                    }
-                    else
-                    {
-                        //делаем ячейки не выделяемыми
-                        GUI.Label(new Rect(5 + (x * ButtonHeight), 20 + (y * ButtonHeight), ButtonWidth, ButtonHeight), "", "button");
-                    }
+                    dragTexture = inventary[slotId].Textura;//присваиваем нашой текстуре которая должна отображаться при перетаскивании, текстуру предмета
+                    isDraggable = true;//возможность перемещать предмет
+                    selectItem = inventary[slotId];//присваиваем вспомогательной переменной наш предмет
+                    inventary.Remove(slotId);//удаляем из словаря предмет
                 }
             }
         }
-        GUI.DragWindow();
+        else
+        {
+            if (isDraggable)
+            {
+                if (GUI.Button(new Rect(slotPosition, slotSize), "", "button"))
+                {
+                    inventary.Add(slotId, selectItem);//добавляем предмет который перетаскиваем в словарь
+                                                      //обнуляем переменные
+
+                    if (shipSlot != null)
+                    {
+                        SetItemToShipSlot((ShipSlots)shipSlot, selectItem);
+                    }
+
+                    isDraggable = false;
+                    selectItem = null;
+                }
+            }
+            else
+            {
+                //делаем ячейки не выделяемыми
+                GUI.Label(new Rect(slotPosition, slotSize), "", "button");
+            }
+        }
+    }
+
+    private void SetItemToShipSlot(ShipSlots shipSlot, Item item)
+    {
+        GameObject go = GameObject.FindGameObjectWithTag("GameController");
+        GameController pc = go.GetComponent<GameController>() as GameController;
+        switch (shipSlot)
+        {
+            case ShipSlots.primalWeapon:
+                pc.SweachWeapon(selectItem.Name);
+                break;
+            
+            default:
+                break;
+        }
     }
 
     //окно с инвентарем
@@ -120,7 +166,7 @@ public class Inventory : MonoBehaviour
             {
                 if (InventoryPlayer.ContainsKey(x + y * invColumns))//проверяем содеоржится ли ключ с данным значением
                 {
-                    if (GUI.Button(new Rect(5 + (x * ButtonHeight), 20 + (y * ButtonHeight), ButtonWidth, ButtonHeight), new GUIContent(InventoryPlayer[x + y * invColumns].Textura), "buttwon"))
+                    if (GUI.Button(new Rect(5 + (x * ButtonHeight), 20 + (y * ButtonHeight), ButtonWidth, ButtonHeight), new GUIContent(InventoryPlayer[x + y * invColumns].Textura), "button"))
                     {
                         if (!isDraggable)
                         {

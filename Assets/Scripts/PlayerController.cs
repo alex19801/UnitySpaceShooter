@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject shot;
     public Transform shotSpawn;
     public Weapon weapon;
+    public Dictionary<ShipSlots, Item> equipment = new Dictionary<ShipSlots, Item>();
 
 
     private Rigidbody rb;
@@ -27,20 +28,42 @@ public class PlayerController : MonoBehaviour {
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        GameObject go = GameObject.FindGameObjectWithTag("GameController");
+        GameController pc = go.GetComponent<GameController>() as GameController;
+        
+        pc.SweachWeapon("Weapon1");
     }
 
     private void Update()
     {
-        if (Input.GetButton("Fire1") && Time.time > nextTime)
+        if (equipment.ContainsKey(ShipSlots.primalWeapon) 
+            /*&& equipment[ShipSlots.primalWeapon] != null*/ )
         {
-            nextTime = Time.time + weapon.fireRate; // fireRate;
-            GameObject ammo =  Instantiate(weapon.ammo, shotSpawn.position, shotSpawn.rotation);
-            Health damage = ammo.GetComponent<Health>();
-            if (damage != null) {
-                damage.health = weapon.damage;
+            if (equipment[ShipSlots.primalWeapon].autoShot || Input.GetButton("Fire1") && Time.time > nextTime)
+            {
+                nextTime = Time.time + equipment[ShipSlots.primalWeapon].weapon.fireRate; // fireRate;
+                GameObject ammo = Instantiate(equipment[ShipSlots.primalWeapon].weapon.ammo, shotSpawn.position, equipment[ShipSlots.primalWeapon].weapon.transform.rotation);
+                ammo.GetComponent<Mover>().Speed = equipment[ShipSlots.primalWeapon].weapon.bulletSpead;
+                Health damage = ammo.GetComponent<Health>();
+                if (damage != null)
+                {
+                    damage.health = equipment[ShipSlots.primalWeapon].weapon.damage;
+                }
             }
-            //Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
         }
+
+        //if (Input.GetButton("Fire1") && Time.time > nextTime)
+        //{
+        //    nextTime = Time.time + weapon.fireRate; // fireRate;
+        //    GameObject ammo =  Instantiate(weapon.ammo, shotSpawn.position, weapon.transform.rotation);
+        //    ammo.GetComponent<Mover>().Speed = weapon.bulletSpead;
+        //    Health damage = ammo.GetComponent<Health>();
+        //    if (damage != null) {
+        //        damage.health = weapon.damage;
+        //    }
+        //    //Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+        //}
     } 
 
     void FixedUpdate()

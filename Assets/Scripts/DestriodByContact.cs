@@ -49,7 +49,7 @@ public class DestriodByContact : MonoBehaviour
          
         if (other.tag == "Ammo" || other.CompareTag ("Player"))
         {
-            Instantiate(ammoExplosion, transform.position, transform.rotation);
+            Instantiate(ammoExplosion, other.transform.position, other.transform.rotation);
             float ammoHealth = otherHealth;
             otherHealth -= health;
             otherObject.health = otherHealth;

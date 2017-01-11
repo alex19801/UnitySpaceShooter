@@ -12,14 +12,4 @@ public class ItemData : MonoBehaviour {
     {
         _ItemData = this;
     }
-
-    
-    //генерация предмета
-    //public Item ItemGen(int win_id)
-    //{
-    //    Item item = new Item();
-    //    item.Name = Items[win_id].Name;
-    //    item.Textura = Items[win_id].Textura;
-    //    return item;
-    //}
 }
