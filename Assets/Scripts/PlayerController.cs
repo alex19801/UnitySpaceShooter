@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [System.Serializable]
 public class Boundary
@@ -16,14 +18,14 @@ public class PlayerController : MonoBehaviour {
     public Boundary boundary;
 
     public GameObject shot;
-    public Transform shotSpawn;
     public Weapon weapon;
     public Dictionary<ShipSlots, Item> equipment = new Dictionary<ShipSlots, Item>();
 
 
+    public Transform[] shotSpawnPoints;
     private Rigidbody rb;
-    private float nextTime;
-    
+    private Dictionary<ShipSlots, float> slotTimers = new Dictionary<ShipSlots, float>();
+
 
     private void Start()
     {
@@ -33,38 +35,63 @@ public class PlayerController : MonoBehaviour {
         GameController pc = go.GetComponent<GameController>() as GameController;
         
         pc.SweachWeapon("Weapon1");
+        pc.SweachWeapon("WeaponDefault", ShipSlots.leftWing);
+        //pc.SweachWeapon("WeaponDefault", ShipSlots.rightWing);
+        // equipment[ShipSlots.rightWing].autoShot = true;
+
+        // initialize timers
+        foreach (ShipSlots slot in Enum.GetValues(typeof(ShipSlots)).Cast<ShipSlots>())
+        {
+            slotTimers[slot] = Time.time;
+        }
+
+        shotSpawnPoints[(int)ShipSlots.primalWeapon] = shotSpawnPoints[0];
+        shotSpawnPoints[(int)ShipSlots.leftWing] = shotSpawnPoints[1];
+        shotSpawnPoints[(int)ShipSlots.rightWing] = shotSpawnPoints[2];
+
+    }
+
+    private Transform FindTransform(Transform[] parent, String name)
+    {
+        //if (parent.name == name) return parent;
+        //var transforms = parent.GetComponentsInChildren<Transform>();
+        Transform[] transforms = parent;
+        foreach (Transform t in transforms)
+        {
+            if (t.name == name) return t;
+        }
+
+        return null;
     }
 
     private void Update()
     {
-        if (equipment.ContainsKey(ShipSlots.primalWeapon) 
-            /*&& equipment[ShipSlots.primalWeapon] != null*/ )
+        ShotWeapon(ShipSlots.primalWeapon);
+
+        ShotWeapon(ShipSlots.leftWing);
+
+        ShotWeapon(ShipSlots.rightWing);
+    } 
+
+    private void ShotWeapon(ShipSlots slot)
+    {
+        if (equipment.ContainsKey(slot)
+            && equipment[slot] != null)
         {
-            if (equipment[ShipSlots.primalWeapon].autoShot || Input.GetButton("Fire1") && Time.time > nextTime)
+            if (Time.time > slotTimers[slot] && (equipment[slot].autoShot || Input.GetButton("Fire1")))
             {
-                nextTime = Time.time + equipment[ShipSlots.primalWeapon].weapon.fireRate; // fireRate;
-                GameObject ammo = Instantiate(equipment[ShipSlots.primalWeapon].weapon.ammo, shotSpawn.position, equipment[ShipSlots.primalWeapon].weapon.transform.rotation);
-                ammo.GetComponent<Mover>().Speed = equipment[ShipSlots.primalWeapon].weapon.bulletSpead;
+                slotTimers[slot] = Time.time + equipment[slot].weapon.fireRate; // fireRate;
+                Transform spawnPoint = shotSpawnPoints[(int)slot];
+                GameObject ammo = Instantiate(equipment[slot].weapon.ammo, spawnPoint.position, equipment[slot].weapon.transform.rotation);
+                ammo.GetComponent<Mover>().Speed = equipment[slot].weapon.bulletSpead;
                 Health damage = ammo.GetComponent<Health>();
                 if (damage != null)
                 {
-                    damage.health = equipment[ShipSlots.primalWeapon].weapon.damage;
+                    damage.health = equipment[slot].weapon.damage;
                 }
             }
         }
-
-        //if (Input.GetButton("Fire1") && Time.time > nextTime)
-        //{
-        //    nextTime = Time.time + weapon.fireRate; // fireRate;
-        //    GameObject ammo =  Instantiate(weapon.ammo, shotSpawn.position, weapon.transform.rotation);
-        //    ammo.GetComponent<Mover>().Speed = weapon.bulletSpead;
-        //    Health damage = ammo.GetComponent<Health>();
-        //    if (damage != null) {
-        //        damage.health = weapon.damage;
-        //    }
-        //    //Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
-        //}
-    } 
+    }
 
     void FixedUpdate()
     {

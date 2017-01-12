@@ -34,7 +34,15 @@ public class Inventory : MonoBehaviour
         {
             InventoryPlayer.Add(i, items[i]);
         }
-        
+        for (int i = 0; i < items.Count; i++)
+        {
+            InventoryPlayer.Add(i + items.Count, items[i]);
+        }
+        for (int i = 0; i < items.Count; i++)
+        {
+            InventoryPlayer.Add(i + items.Count*2, items[i]);
+        }
+
     }
 
     // Update is called once per frame
@@ -87,15 +95,15 @@ public class Inventory : MonoBehaviour
         
         // Left wing
         Vector2 leftWingSlotPosition = new Vector2(10, 150);
-        SetSlot(ref ShippedItems, 1, leftWingSlotPosition, slotSize);
+        SetSlot(ref ShippedItems, 1, leftWingSlotPosition, slotSize, ShipSlots.leftWing);
         
         // Right wing
         Vector2 rightWingSlotPosition = new Vector2(120, 150);
-        SetSlot(ref ShippedItems, 2, rightWingSlotPosition, slotSize);
+        SetSlot(ref ShippedItems, 2, rightWingSlotPosition, slotSize, ShipSlots.rightWing);
 
         // Rear slot
         Vector2 rearSlotPosition = new Vector2(63, 220);
-        SetSlot(ref ShippedItems, 3, rearSlotPosition, slotSize);
+        SetSlot(ref ShippedItems, 3, rearSlotPosition, slotSize, ShipSlots.rear);
 
 
         GUI.DragWindow();
@@ -146,15 +154,9 @@ public class Inventory : MonoBehaviour
     {
         GameObject go = GameObject.FindGameObjectWithTag("GameController");
         GameController pc = go.GetComponent<GameController>() as GameController;
-        switch (shipSlot)
-        {
-            case ShipSlots.primalWeapon:
-                pc.SweachWeapon(selectItem.Name);
-                break;
-            
-            default:
-                break;
-        }
+        print(shipSlot);
+        pc.SweachWeapon(selectItem.Name, shipSlot);
+         
     }
 
     //окно с инвентарем
