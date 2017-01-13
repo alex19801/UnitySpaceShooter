@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour {
     public Dictionary<ShipSlots, Item> equipment = new Dictionary<ShipSlots, Item>();
 
 
-    public Transform[] shotSpawnPoints;
+    public Dictionary<ShipSlots, Transform> shotSpawnPoints = new Dictionary<ShipSlots, Transform>();
     private Rigidbody rb;
     private Dictionary<ShipSlots, float> slotTimers = new Dictionary<ShipSlots, float>();
 
@@ -34,8 +34,8 @@ public class PlayerController : MonoBehaviour {
         GameObject go = GameObject.FindGameObjectWithTag("GameController");
         GameController pc = go.GetComponent<GameController>() as GameController;
         
-        pc.SweachWeapon("Weapon1");
-        pc.SweachWeapon("WeaponDefault", ShipSlots.leftWing);
+        //pc.SweachWeapon("Weapon1");
+        //pc.SweachWeapon("WeaponDefault", ShipSlots.leftWing);
         //pc.SweachWeapon("WeaponDefault", ShipSlots.rightWing);
         // equipment[ShipSlots.rightWing].autoShot = true;
 
@@ -44,10 +44,10 @@ public class PlayerController : MonoBehaviour {
         {
             slotTimers[slot] = Time.time;
         }
-
-        shotSpawnPoints[(int)ShipSlots.primalWeapon] = shotSpawnPoints[0];
-        shotSpawnPoints[(int)ShipSlots.leftWing] = shotSpawnPoints[1];
-        shotSpawnPoints[(int)ShipSlots.rightWing] = shotSpawnPoints[2];
+        print(GetComponent<ShotSpawnPrimal>().transform);
+        shotSpawnPoints[ShipSlots.primalWeapon] = GetComponent<ShotSpawnLeft>().transform;
+        shotSpawnPoints[ShipSlots.leftWing] = GetComponent<ShotSpawnLeft>().transform;
+        shotSpawnPoints[ShipSlots.rightWing] = GetComponent<ShotSpawnRight>().transform;
 
     }
 
@@ -66,22 +66,34 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
-        ShotWeapon(ShipSlots.primalWeapon);
+        foreach (ShipSlots currentSlot in Enum.GetValues(typeof(ShipSlots)).Cast<ShipSlots>())
+        {
+            if (equipment.ContainsKey(currentSlot) && equipment[currentSlot] != null)
+            {
+                ShotWeapon(currentSlot);
+            }
+        }
 
-        ShotWeapon(ShipSlots.leftWing);
-
-        ShotWeapon(ShipSlots.rightWing);
     } 
+    public static class Extension 
+    {
+        public static void GetListMethod(this ShipSlots i)
+        {
+            Enum ee = Enum.GetValues(typeof(ShipSlots)).Cast<ShipSlots>();
+            return ee;
+        }
+    }
 
     private void ShotWeapon(ShipSlots slot)
     {
+        
         if (equipment.ContainsKey(slot)
             && equipment[slot] != null)
         {
             if (Time.time > slotTimers[slot] && (equipment[slot].autoShot || Input.GetButton("Fire1")))
             {
                 slotTimers[slot] = Time.time + equipment[slot].weapon.fireRate; // fireRate;
-                Transform spawnPoint = shotSpawnPoints[(int)slot];
+                Transform spawnPoint = shotSpawnPoints[slot];
                 GameObject ammo = Instantiate(equipment[slot].weapon.ammo, spawnPoint.position, equipment[slot].weapon.transform.rotation);
                 ammo.GetComponent<Mover>().Speed = equipment[slot].weapon.bulletSpead;
                 Health damage = ammo.GetComponent<Health>();

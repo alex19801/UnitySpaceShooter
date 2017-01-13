@@ -127,6 +127,8 @@ public class GameController : MonoBehaviour {
 
         var weapons = Resources.FindObjectsOfTypeAll(typeof(Weapon)) as Weapon[];
 
+        player.equipment[shipmentSlot] = null; // removet before qwuip
+
         foreach (Weapon weapon in weapons)
         {
             if (weapon.name == weaponName)

@@ -77,16 +77,11 @@ public class Inventory : MonoBehaviour
 
     void insert2(int id)
     {
-        shipModel.transform.position = new Vector3(-16.4f, 0, -5);
-        shipModel.transform.localScale = new Vector3(5, 5, 5);
-
         if (!_playerShipModel)
         {
-            // _playerShipModel = Instantiate(shipModel, new Vector2(10, 10), new Quaternion(0, 0, 0, 0));
             _playerShipModel = Instantiate(shipModel);
         }
-
-
+        
         Vector2 slotSize = new Vector2(ButtonHeight, ButtonWidth);
 
         // Primal Weapon
@@ -121,6 +116,7 @@ public class Inventory : MonoBehaviour
                     isDraggable = true;//возможность перемещать предмет
                     selectItem = inventary[slotId];//присваиваем вспомогательной переменной наш предмет
                     inventary.Remove(slotId);//удаляем из словаря предмет
+                    SetItemToShipSlot((ShipSlots)shipSlot, null); //удаляем предмет из слотак корабля
                 }
             }
         }
@@ -155,7 +151,7 @@ public class Inventory : MonoBehaviour
         GameObject go = GameObject.FindGameObjectWithTag("GameController");
         GameController pc = go.GetComponent<GameController>() as GameController;
         print(shipSlot);
-        pc.SweachWeapon(selectItem.Name, shipSlot);
+        pc.SweachWeapon(item == null ? "": item.Name, shipSlot);
          
     }
 
