@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour {
     public Boundary boundary;
 
     public GameObject shot;
+    public Transform primalSpawn;
+    public Transform leftSpawn;
+    public Transform rightlSpawn;
+
     public Weapon weapon;
     public Dictionary<ShipSlots, Item> equipment = new Dictionary<ShipSlots, Item>();
 
@@ -34,7 +38,7 @@ public class PlayerController : MonoBehaviour {
         GameObject go = GameObject.FindGameObjectWithTag("GameController");
         GameController pc = go.GetComponent<GameController>() as GameController;
         
-        //pc.SweachWeapon("Weapon1");
+        pc.SweachWeapon("Weapon1");
         //pc.SweachWeapon("WeaponDefault", ShipSlots.leftWing);
         //pc.SweachWeapon("WeaponDefault", ShipSlots.rightWing);
         // equipment[ShipSlots.rightWing].autoShot = true;
@@ -44,10 +48,13 @@ public class PlayerController : MonoBehaviour {
         {
             slotTimers[slot] = Time.time;
         }
-        print(GetComponent<ShotSpawnPrimal>().transform);
-        shotSpawnPoints[ShipSlots.primalWeapon] = GetComponent<ShotSpawnLeft>().transform;
-        shotSpawnPoints[ShipSlots.leftWing] = GetComponent<ShotSpawnLeft>().transform;
-        shotSpawnPoints[ShipSlots.rightWing] = GetComponent<ShotSpawnRight>().transform;
+        //print(GetComponent<ShotSpawnPrimal>().transform);
+        //shotSpawnPoints[ShipSlots.primalWeapon] = GetComponent<ShotSpawnLeft>().transform;
+        //shotSpawnPoints[ShipSlots.leftWing] = GetComponent<ShotSpawnLeft>().transform;
+        //shotSpawnPoints[ShipSlots.rightWing] = GetComponent<ShotSpawnRight>().transform;
+        shotSpawnPoints[ShipSlots.primalWeapon] = primalSpawn;
+        shotSpawnPoints[ShipSlots.leftWing] = leftSpawn;
+        shotSpawnPoints[ShipSlots.rightWing] = rightlSpawn;
 
     }
 
@@ -75,14 +82,14 @@ public class PlayerController : MonoBehaviour {
         }
 
     } 
-    public static class Extension 
-    {
-        public static void GetListMethod(this ShipSlots i)
-        {
-            Enum ee = Enum.GetValues(typeof(ShipSlots)).Cast<ShipSlots>();
-            return ee;
-        }
-    }
+    //public static class Extension 
+    //{
+    //    public static void GetListMethod(this ShipSlots i)
+    //    {
+    //        Enum ee = Enum.GetValues(typeof(ShipSlots)).Cast<ShipSlots>();
+    //        return ee;
+    //    }
+    //}
 
     private void ShotWeapon(ShipSlots slot)
     {
