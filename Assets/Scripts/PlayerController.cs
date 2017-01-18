@@ -93,20 +93,24 @@ public class PlayerController : MonoBehaviour {
 
     private void ShotWeapon(ShipSlots slot)
     {
-        
+
         if (equipment.ContainsKey(slot)
             && equipment[slot] != null)
         {
             if (Time.time > slotTimers[slot] && (equipment[slot].autoShot || Input.GetButton("Fire1")))
             {
-                slotTimers[slot] = Time.time + equipment[slot].weapon.fireRate; // fireRate;
+                Weapon weapon = equipment[slot].weapon;
+                Quaternion razbros = weapon.transform.rotation;
+                razbros.y += UnityEngine.Random.Range(-weapon.dispersion, weapon.dispersion);
+
+                slotTimers[slot] = Time.time + weapon.fireRate; // fireRate;
                 Transform spawnPoint = shotSpawnPoints[slot];
-                GameObject ammo = Instantiate(equipment[slot].weapon.ammo, spawnPoint.position, equipment[slot].weapon.transform.rotation);
-                ammo.GetComponent<Mover>().Speed = equipment[slot].weapon.bulletSpead;
+                GameObject ammo = Instantiate(weapon.ammo, spawnPoint.position, razbros);
+                ammo.GetComponent<Mover>().Speed = weapon.bulletSpead;
                 Health damage = ammo.GetComponent<Health>();
                 if (damage != null)
                 {
-                    damage.health = equipment[slot].weapon.damage;
+                    damage.health = weapon.damage;
                 }
             }
         }

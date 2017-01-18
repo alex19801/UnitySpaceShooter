@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour {
     public GUIText scoreText;
     public GUIText gameOverText;
     public GUIText restartText;
-    
+    public GUIText HealthText;
 
 
     private bool gameOver;
