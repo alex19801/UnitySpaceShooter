@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour {
         GameObject go = GameObject.FindGameObjectWithTag("GameController");
         GameController pc = go.GetComponent<GameController>() as GameController;
         
-        pc.SweachWeapon("Weapon1");
+        pc.SweachWeapon("WeaponLaser");
         //pc.SweachWeapon("WeaponDefault", ShipSlots.leftWing);
         //pc.SweachWeapon("WeaponDefault", ShipSlots.rightWing);
         // equipment[ShipSlots.rightWing].autoShot = true;
@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour {
         if (equipment.ContainsKey(slot)
             && equipment[slot] != null)
         {
-            if (Time.time > slotTimers[slot] && (equipment[slot].autoShot || Input.GetButton("Fire1")))
+            if (Time.time > slotTimers[slot] && (true || equipment[slot].autoShot || Input.GetButton("Fire1")))
             {
                 Weapon weapon = equipment[slot].weapon;
                 Quaternion razbros = weapon.transform.rotation;
