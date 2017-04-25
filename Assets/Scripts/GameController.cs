@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -128,14 +129,16 @@ public class GameController : MonoBehaviour {
         PlayerController player = go.GetComponent<PlayerController>();
 
         var weapons = Resources.FindObjectsOfTypeAll(typeof(Weapon)) as Weapon[];
+        var weaponListString = string.Join(",", weapons.Select(w => w.name).ToArray());
 
         player.equipment[shipmentSlot] = null; // removet before qwuip
 
+        print("Try set '" + weaponName + "' in ("+ weaponListString + ")");
         foreach (Weapon weapon in weapons)
         {
             if (weapon.name == weaponName)
             {
-                print("GameObjects " + weapon);
+                print("Found and set: " + weapon);
                 player.weapon = weapon;
                 player.equipment[shipmentSlot] = new Item() { weapon = weapon };
             }
