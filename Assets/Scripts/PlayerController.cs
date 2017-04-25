@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour {
         GameObject go = GameObject.FindGameObjectWithTag("GameController");
         GameController pc = go.GetComponent<GameController>() as GameController;
         
-        pc.SweachWeapon("Weapon1");
+        pc.SweachWeapon("WeaponLaser");
         //pc.SweachWeapon("WeaponDefault", ShipSlots.leftWing);
         //pc.SweachWeapon("WeaponDefault", ShipSlots.rightWing);
         // equipment[ShipSlots.rightWing].autoShot = true;

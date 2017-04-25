@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,11 +12,12 @@ public class GameController : MonoBehaviour {
 	public float StartDelay;
 	public float waveDelay;
 	public float betwinWaveDelay;
-    public GUIText scoreText;
-    public GUIText gameOverText;
-    public GUIText restartText;
-    public GUIText HealthText;
-
+    //public GUIText scoreText;
+    //public GUIText gameOverText;
+    //public GUIText restartText;
+    //public GUIText HealthText;
+    //public GUIText DebugText;
+    public GuiItems guiList;
 
     private bool gameOver;
     private bool restart;
@@ -34,7 +36,7 @@ public class GameController : MonoBehaviour {
 
     public void GameOver()
     {
-        gameOverText.text = "GAME OVER";
+        guiList.gameOverText.text = "GAME OVER";
         gameOver = true;
     }
 
@@ -49,8 +51,8 @@ public class GameController : MonoBehaviour {
     {
         gameOver = false;
         restart = false;
-        gameOverText.text = "";
-        restartText.text = "";
+        guiList.gameOverText.text = "";
+        guiList.restartText.text = "";
         Score = 0;
         wave = 0;
         UpdateScore();
@@ -157,30 +159,36 @@ public class GameController : MonoBehaviour {
                 
 			}
 
-            UpadateWave();
+            UpadateWave(wave);
 
             yield return new WaitForSeconds (betwinWaveDelay);
 
             if (gameOver)
             {
-                restartText.text = "Press 'R' for Restart.";
+                guiList.restartText.text = "Press 'R' for Restart.";
                 restart = true;
                 break;
             }
 		}
 	}
 
-    private void UpadateWave()
+    private void UpadateWave(int wave)
     {
         GameObject bacground = GameObject.FindGameObjectWithTag("BackGround");
         BackgroundScrolling bacjgroundScrolling = bacground.GetComponent<BackgroundScrolling>();
         bacjgroundScrolling.scrollSpeed = bacjgroundScrolling.scrollSpeed * 1.02f; // +2% background Speed after every wave;
-        scoreText.text =  "BacSpeed: " + bacjgroundScrolling.scrollSpeed;
+
+        //GameObject starField = GameObject.FindGameObjectWithTag("StarField");
+        //ParticleSystem starField1 = starField.GetComponent<ParticleSystem>();
+        //float starSpeed1 = starField1.startSpeed;
+        guiList.DebugText.text = "BacSpeed: " + bacjgroundScrolling.scrollSpeed;
+        guiList.DebugText.text += "\r\nWave: " + wave;
+        //guiList.DebugText.text += "\r\nStarSpeed1: " + starSpeed1;
     }
 
     void UpdateScore()
     {
-        scoreText.text = "Score: " + Score;
+        guiList.scoreText.text = "Score: " + Score;
     }
     #endregion
 
