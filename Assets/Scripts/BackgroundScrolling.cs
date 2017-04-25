@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BackgroundScrolling : MonoBehaviour {
 
-    public float scrollSpeed;
+    public float ScrollSpeed;
+    public int Wave;
 
     private Vector3 startPosition;
 	
@@ -14,7 +15,7 @@ public class BackgroundScrolling : MonoBehaviour {
 	
 	void Update () {
 
-        float newPosition = Mathf.Repeat(Time.time * scrollSpeed, transform.localScale.y);
+        float newPosition = Mathf.Repeat(Time.time * ScrollSpeed, transform.localScale.y);
 
         transform.position = startPosition + Vector3.forward * newPosition;
 	}

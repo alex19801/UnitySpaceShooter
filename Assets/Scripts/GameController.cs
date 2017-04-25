@@ -179,14 +179,14 @@ public class GameController : MonoBehaviour {
     {
         GameObject bacground = GameObject.FindGameObjectWithTag("BackGround");
         BackgroundScrolling bacjgroundScrolling = bacground.GetComponent<BackgroundScrolling>();
-        bacjgroundScrolling.scrollSpeed = bacjgroundScrolling.scrollSpeed * 1.02f; // +2% background Speed after every wave;
+        bacjgroundScrolling.Wave = wave;
 
         //GameObject starField = GameObject.FindGameObjectWithTag("StarField");
         //ParticleSystem starField1 = starField.GetComponent<ParticleSystem>();
-        //float starSpeed1 = starField1.startSpeed;
-        guiList.DebugText.text = "BacSpeed: " + bacjgroundScrolling.scrollSpeed;
+        //guiList.DebugText.text += "\r\nStarSpeed1: " + starField1.startSpeed;
+
+        guiList.DebugText.text = "BacSpeed: " + bacjgroundScrolling.ScrollSpeed;
         guiList.DebugText.text += "\r\nWave: " + wave;
-        //guiList.DebugText.text += "\r\nStarSpeed1: " + starSpeed1;
     }
 
     void UpdateScore()
